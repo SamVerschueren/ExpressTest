@@ -1,10 +1,15 @@
 'use strict';
 
 // Module dependencies
-var sinon = require('sinon'),
+var chai = require('chai'),
+    sinonChai = require('sinon-chai'),
+    sinon = require('sinon'),
     express = require('./utils/ExpressMock'),
     mongoose = require('mongoose'),
     expressValidator = require('express-validator');
+
+chai.should();
+chai.use(sinonChai);
 
 // Load utilities
 var Model = require('mongoose/lib/model');
@@ -46,16 +51,16 @@ describe('LoginController', function() {
                 };
             });
 
-            it('Should send status 400', function() {
+            it('Should send a status 400', function() {
                 this.controller.login(req, res);
 
-                sinon.assert.calledWith(res.status, 400);
+                res.status.should.have.been.calledWithExactly(400);
             });
 
             it('Should call json method', function() {
                 this.controller.login(req, res);
 
-                sinon.assert.calledOnce(res.json);
+                res.json.should.have.been.calledOnce;
             });
         });
 
@@ -70,7 +75,7 @@ describe('LoginController', function() {
             it('Should call findOne one time', function() {
                 this.controller.login(req, res);
 
-                sinon.assert.calledOnce(Model.findOne);
+                Model.findOne.should.have.been.calledOnce;
             });
         });
     });

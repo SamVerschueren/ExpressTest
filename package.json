@@ -32,6 +32,7 @@
     "nodemon": "latest",
     "sinon": "~1.12.2",
     "chai": "~1.10.0",
-    "lodash": "~2.4.1"
+    "lodash": "~2.4.1",
+    "sinon-chai": "~2.6.0"
   }
 }

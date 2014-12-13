@@ -1,8 +1,13 @@
 'use strict';
 
 // Module dependencies
-var sinon = require('sinon'),
+var chai = require('chai'),
+    sinonChai = require('sinon-chai'),
+    sinon = require('sinon'),
     express = require('./utils/ExpressMock');
+
+chai.should();
+chai.use(sinonChai);
 
 // Load controller
 var home = require('../app/controllers/HomeController');
@@ -27,21 +32,21 @@ describe('HomeController', function() {
             // Execute method
             home.index(req, res);
             
-            sinon.assert.calledOnce(res.render);
+            res.render.should.have.been.calledOnce;
         }));
 
         it('Should render home', sinon.test(function() {
             // Execute method
             home.index(req, res);
 
-            sinon.assert.calledWith(res.render, 'home');
+            res.render.should.have.been.calledWith('home');
         }));
 
         it('Should render home with title home', sinon.test(function() {
             // Execute method
             home.index(req, res);
 
-            sinon.assert.calledWithExactly(res.render, 'home', {title: 'Home'});
+            res.render.should.have.been.calledWithExactly('home', {title: 'Home'});
         }));
     });
 });
