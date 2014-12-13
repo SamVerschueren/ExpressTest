@@ -31,6 +31,7 @@
   "devDependencies": {
     "nodemon": "latest",
     "sinon": "~1.12.2",
-    "chai": "~1.10.0"
+    "chai": "~1.10.0",
+    "lodash": "~2.4.1"
   }
 }

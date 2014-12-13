@@ -2,54 +2,46 @@
 
 // Module dependencies
 var sinon = require('sinon'),
-    chai = require('chai'),
-    expect = chai.expect;
+    express = require('./utils/ExpressMock');
 
-// Controllers
+// Load controller
 var home = require('../app/controllers/HomeController');
 
-describe('Home', function() {
+// Test the controller
+describe('HomeController', function() {
 
-    beforeEach(function() {
-        this.req = {};
-        this.res = {
-            render: function() { }
-        };
-    });
+    var req, res;
 
+    // Test the index method
     describe('#index()', function() {
-        it('Should call render', function() {
-            // Install spy on the render method
-            sinon.spy(this.res, 'render');
 
+        beforeEach(function() {
+            req = express.request.newInstance(),
+            res = express.response.newInstance();
+
+            // Install a stub on the render method
+            sinon.stub(res, 'render');
+        });
+
+        it('Should call render', sinon.test(function() {
             // Execute method
-            home.index(this.req, this.res);
+            home.index(req, res);
             
-            // expect(this.res.render.calledOnce).to.be.true;
-            sinon.assert.calledOnce(this.res.render);
-        });
+            sinon.assert.calledOnce(res.render);
+        }));
 
-        it('Should render home', function() {
-            // Install spy on the render method
-            sinon.spy(this.res, 'render');
-
+        it('Should render home', sinon.test(function() {
             // Execute method
-            home.index(this.req, this.res);
+            home.index(req, res);
 
-            // expect(this.res.render.args[0][0]).to.be.equals('home');
-            // expect(this.res.render.calledWith('home')).to.be.true;
-            sinon.assert.calledWith(this.res.render, 'home');
-        });
+            sinon.assert.calledWith(res.render, 'home');
+        }));
 
-        it('Should render home with title home', function() {
-            // Install spy on the render method
-            sinon.spy(this.res, 'render');
-
+        it('Should render home with title home', sinon.test(function() {
             // Execute method
-            home.index(this.req, this.res);
+            home.index(req, res);
 
-            // expect(this.res.render.calledWithExactly('home', {title: 'Home'})).to.be.true;
-            sinon.assert.calledWithExactly(this.res.render, 'home', {title: 'Home'});
-        });
+            sinon.assert.calledWithExactly(res.render, 'home', {title: 'Home'});
+        }));
     });
 });
