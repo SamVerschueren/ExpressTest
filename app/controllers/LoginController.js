@@ -1,5 +1,11 @@
 'use strict';
 
+// Module dependencies
+var mongoose = require('mongoose');
+
+// Models
+var User = mongoose.model('User');
+
 /**
  * This method will check for the credentials provided
  * by the user and will throw an error if the credentials or not
@@ -16,4 +22,8 @@ exports.login = function(req, res) {
     if(errors.length > 0) {
         return res.status(400).json(errors);
     }
+
+    User.findOne({email: req.body.mail}, function(err, user) {
+
+    });
 };
