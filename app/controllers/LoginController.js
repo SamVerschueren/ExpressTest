@@ -24,6 +24,14 @@ exports.login = function(req, res) {
     }
 
     User.findOne({email: req.body.mail}, function(err, user) {
+        if(err) {
+            return res.status(500).end();
+        }
 
+        if(user.authenticate(req.body.password)) {
+            return res.redirect('/home');
+        }
+
+        res.status(403).end();
     });
 };
