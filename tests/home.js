@@ -19,8 +19,8 @@ describe('HomeController', function() {
             req = express.request.newInstance(),
             res = express.response.newInstance();
 
-            // Install a stub on the render method
-            sinon.stub(res, 'render');
+            // Install a spy on the render method
+            sinon.spy(res, 'render');
         });
 
         it('Should call render', sinon.test(function() {
