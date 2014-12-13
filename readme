@@ -1,0 +1,84 @@
+npm install -g mocha
+
+npm install chai --save-dev
+npm install sinon --save-dev
+
+---------------------
+Spy
+    What?
+        - Behaves like function() { }
+        - All calls are recorded
+        - Verify using assertions
+
+    Properties
+        - spy.called
+        - spy.calledOnce
+        - spy.calledTwice
+        - spy.calledThrice
+        - spy.callCount
+        - spy.calledOn(obj)
+        - spy.threw()
+        - spy.returned(obj)
+
+Stubs
+    What?
+        - Stubs are spies!
+        - Stubs do NOT call original method
+        - Have API for controlling behavior
+        
+    Controlling behaviour
+        - returns
+            var stub = sinon.stub(obj, 'foo').returns('bar');
+
+            var bar = obj.foo();
+
+        - yields
+            var stub = sinon.stub(obj, 'foo').yields('bar');
+
+            obj.foo(function(bar) {
+
+            });
+
+        - throws
+            var stub = sinon.stub(obj, 'foo').throws(new Error('Hello World'));
+
+            try {
+                obj.foo();
+            }
+            catch(err) {
+
+            }
+
+        - yieldsTo
+            var stub = sinon.stub(obj, 'foo').yielsTo('success', '{hello: "world"}');
+
+            obj.foo({
+                success: function(obj) {
+
+                }
+            });
+
+Mocks
+    What?
+        - State expectations up-front
+        - No need for assertions
+
+            Example
+                var mock = sinon.mock(obj);
+                mock.expects('foo');
+
+                obj.foo();
+
+                mock.verify();
+
+        - Spies + Stubs
+
+            Example
+                var mock = sinon.mock(obj);
+                mock.expects('foo').yields('bar');
+
+                obj.foo(function(bar) {
+
+                });
+
+                mock.verify();
