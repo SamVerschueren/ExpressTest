@@ -20,18 +20,24 @@ exports.login = function(req, res) {
     var errors = req.validationErrors() || [];
 
     if(errors.length > 0) {
-        return res.status(400).json(errors);
+        return onError(errors);
     }
 
     User.findOne({email: req.body.mail}, function(err, user) {
         if(err) {
-            return res.status(500).end();
+            return onError(err)
         }
 
         if(user.authenticate(req.body.password)) {
             return res.redirect('/home');
         }
 
-        res.status(403).end();
+        onError('Invalid credentials, please try again.');
     });
+
+    function onError(err) {
+        req.flash('error', err);
+
+        res.redirect('/login');
+    }
 };

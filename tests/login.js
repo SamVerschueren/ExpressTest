@@ -6,7 +6,8 @@ var chai = require('chai'),
     sinon = require('sinon'),
     express = require('./utils/ExpressMock'),
     mongoose = require('mongoose'),
-    expressValidator = require('express-validator');
+    expressValidator = require('express-validator'),
+    flash = require('connect-flash');
 
 chai.should();
 chai.use(sinonChai);
@@ -18,6 +19,7 @@ var Model = require('mongoose/lib/model');
 describe('LoginController', function() {
 
     var req, res;
+    var noop = function() {};
 
     before(function() {
         var user = {
@@ -41,36 +43,39 @@ describe('LoginController', function() {
         this.controller = require('../app/controllers/LoginController');
     });
 
-    beforeEach(function(done) {
+    beforeEach(function() {
         req = express.request.newInstance();
         res = express.response.newInstance();
 
-        expressValidator()(req, res, done);
+        expressValidator()(req, res, noop);
+        flash()(req, res, noop);
+
+        // Install stub instead of spy to make sure the real implementation
+        // is not called.
+        sinon.stub(req, 'flash');
     });
 
     describe('#login()', function() {
         describe('Wrong email address', function() {
             beforeEach(function() {
-                // Install stubs
-                sinon.spy(res, 'status');
-                sinon.spy(res, 'json');
-
                 // Set body
                 req.body = {
                     mail: 'sam'
                 };
             });
 
-            it('Should send a status 400', function() {
+            it('Should flash an error object', function() {
                 this.controller.login(req, res);
 
-                res.status.should.have.been.calledWithExactly(400);
+                req.flash.should.have.been.calledWith('error');
             });
 
-            it('Should call json method', function() {
+            it('Should redirect back to the login page', function() {
+                sinon.spy(res, 'redirect');
+
                 this.controller.login(req, res);
 
-                res.json.should.have.been.calledOnce;
+                res.redirect.should.have.been.calledWithExactly('/login');
             });
         });
 
@@ -114,24 +119,18 @@ describe('LoginController', function() {
                     res.redirect.should.have.been.calledWithExactly('/home');
                 });
 
-                it('Should return status code 403 if password is not correct', function() {
-                    sinon.spy(res, 'status');
-
-                    req.body.password = 'test';
-
+                it('Should flash an error object', function() {
                     this.controller.login(req, res);
 
-                    res.status.should.have.been.calledWithExactly(403);
+                    req.flash.should.have.been.calledWith('error');
                 });
 
-                it('Should return status code 403 if password is not correct', function() {
-                    sinon.spy(res, 'end');
-
-                    req.body.password = 'test';
+                it('Should redirect back to the login page', function() {
+                    sinon.spy(res, 'redirect');
 
                     this.controller.login(req, res);
 
-                    res.end.should.have.been.calledOnce;
+                    res.redirect.should.have.been.calledWithExactly('/login');
                 });
             });
 
@@ -143,20 +142,18 @@ describe('LoginController', function() {
                     };
                 });
 
-                it('Should return status code 500', function() {
-                    sinon.spy(res, 'status');
-
+                it('Should flash an error object', function() {
                     this.controller.login(req, res);
 
-                    res.status.should.have.been.calledWithExactly(500);
+                    req.flash.should.have.been.calledWith('error');
                 });
 
-                it('Should call #end() once', function() {
-                    sinon.spy(res, 'end');
+                it('Should redirect back to the login page', function() {
+                    sinon.spy(res, 'redirect');
 
                     this.controller.login(req, res);
 
-                    res.end.should.have.been.calledOnce;
+                    res.redirect.should.have.been.calledWithExactly('/login');
                 });
             });
         });
