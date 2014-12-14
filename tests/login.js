@@ -66,7 +66,7 @@ describe('LoginController', function() {
             beforeEach(function() {
                 // Set body
                 this.req.body = {
-                    mail: 'sam.verschueren@gmail.co'
+                    mail: 'sam.verschueren@gmail.com'
                 };
             });
 
